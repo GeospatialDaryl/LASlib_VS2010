@@ -487,7 +487,7 @@ int main(int argc, char *argv[])
 	//fprintf(stdout, "This val bp 0 1 2 %18.7f %18.7f %18.7f \n", bufPixel[0], bufPixel[1], bufPixel[2] );
 	//fprintf(stdout, "%.15g  \n" , bufPixel);
 	
-    lasreader->point.Z = (dZ - bufPixel[0]);
+    lasreader->point.Z = (dZ - bufPixel[0])*(1/zScale)+zOffset;
     fprintf (stdout," X, Y, Z, demZ, height :  %18.2f  %18.2f  %10.2f %10.2f %10.2f \n", dX, dY, dZ, bufPixel[0], dZ-bufPixel[0]);
     // write the modified point
     laswriter->write_point(&lasreader->point);
