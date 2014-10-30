@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 	
 	else if (i == argc - 3 && !lasreadopener.active() && !laswriteopener.active())
     {
-	  fprintf(stdout,"Good DEM Name\n");
+	  if (verbose) fprintf(stdout,"Good DEM Name\n");
 	  //fprintf(stdout,argv[i]);
 	  fprintf(stdout,"%i\n",i);
 	  fprintf(stdout,"%c\n",argv[i]);
@@ -264,13 +264,13 @@ int main(int argc, char *argv[])
   if (verbose) fprintf(stderr, "reading %lld points from '%s' and writing them modified to '%s'.\n", lasreader->npoints, lasreadopener.get_file_name(), laswriteopener.get_file_name());
 #endif
 
-  fprintf(stdout, "  scale factor x y z:         "); 
+  if (verbose) fprintf(stdout, "  scale factor x y z:         "); 
   lidardouble2string(printstring, lasheader->x_scale_factor); 
-  fprintf(stdout, "%s ", printstring);  
+  if (verbose) fprintf(stdout, "%s ", printstring);  
   lidardouble2string(printstring, lasheader->y_scale_factor); 
-  fprintf(stdout, "%s ", printstring);  
+  if (verbose) fprintf(stdout, "%s ", printstring);  
   lidardouble2string(printstring, lasheader->z_scale_factor);
-  fprintf(stdout, "%s\012", printstring);
+  if (verbose) fprintf(stdout, "%s\012", printstring);
   xScale = lasheader->x_scale_factor;
   yScale = lasheader->y_scale_factor;
   zScale = lasheader->z_scale_factor;
@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
     exit( 1 );
   double xLL, yLL;
   double xDelta, yDelta;
-  printf( "Size is %d, %d\n",
+  if (verbose) printf( "Size is %d, %d\n",
             GDALGetRasterXSize( hSrcDS ), 
             GDALGetRasterYSize( hSrcDS ) );
 			
@@ -308,18 +308,18 @@ int main(int argc, char *argv[])
   {
     if( adfGeoTransform[2] == 0.0 && adfGeoTransform[4] == 0.0 )
     {
-        printf( "Origin = (%.15f,%.15f)\n",
+        if (verbose) printf( "Origin = (%.15f,%.15f)\n",
                     adfGeoTransform[0], adfGeoTransform[3] );
 		xLL = adfGeoTransform[0];
 		yLL = adfGeoTransform[3];
 
-        printf( "Pixel Size = (%.15f,%.15f)\n",
+        if (verbose) printf( "Pixel Size = (%.15f,%.15f)\n",
                     adfGeoTransform[1], adfGeoTransform[5] );
 		xDelta = adfGeoTransform[1];
 		yDelta = adfGeoTransform[5];
     }
     else
-        printf( "GeoTransform =\n"
+       if (verbose) printf( "GeoTransform =\n"
                     "  %.16g, %.16g, %.16g\n"
                     "  %.16g, %.16g, %.16g\n", 
                     adfGeoTransform[0],
@@ -330,12 +330,12 @@ int main(int argc, char *argv[])
                     adfGeoTransform[5] );
   }
   
-  fprintf(stdout,"header  /n");
-  printf( "Origin = (%.15f,%.15f)\n",
+  if (verbose) fprintf(stdout,"header  /n");
+  if (verbose) printf( "Origin = (%.15f,%.15f)\n",
                     adfGeoTransform[0], adfGeoTransform[3] );
-  printf( "Pixel Size = (%.15f,%.15f)\n",
+  if (verbose) printf( "Pixel Size = (%.15f,%.15f)\n",
                     adfGeoTransform[1], adfGeoTransform[5] );
-  printf( "GeoTransform =\n"
+  if (verbose) printf( "GeoTransform =\n"
                     "  %.16g, %.16g, %.16g\n"
                     "  %.16g, %.16g, %.16g\n", 
 					adfGeoTransform[0],
@@ -350,24 +350,24 @@ int main(int argc, char *argv[])
     //  START Header Info
   GDALDriverH   hDriver;
   hDriver = GDALGetDatasetDriver( hSrcDS );
-  printf( "Driver: %s/%s\n",
+  if (verbose) printf( "Driver: %s/%s\n",
           GDALGetDriverShortName( hSrcDS ),
           GDALGetDriverLongName( hSrcDS ) );
 
-  printf( "Size is %dx%dx%d\n",
+  if (verbose) printf( "Size is %dx%dx%d\n",
           GDALGetRasterXSize( hSrcDS ), 
           GDALGetRasterYSize( hSrcDS ),
           GDALGetRasterCount( hSrcDS ) );
 
   if( GDALGetProjectionRef( hSrcDS ) != NULL )
-      printf( "Projection is `%s'\n", GDALGetProjectionRef( hSrcDS ) );
+      if (verbose) printf( "Projection is `%s'\n", GDALGetProjectionRef( hSrcDS ) );
 
   if( GDALGetGeoTransform( hSrcDS, adfGeoTransform ) == CE_None )
   {
-       printf( "Origin = (%.6f,%.6f)\n   xLL yLL = (%.6f, %.6f) \n",
+      if (verbose) printf( "Origin = (%.6f,%.6f)\n   xLL yLL = (%.6f, %.6f) \n",
               adfGeoTransform[0], adfGeoTransform[3], xLL, yLL );
 	    
-      printf( "Pixel Size = (%.6f,%.6f)\n",
+      if (verbose) printf( "Pixel Size = (%.6f,%.6f)\n",
               adfGeoTransform[1], adfGeoTransform[5] );
   }
 	//  END Header Info
@@ -381,7 +381,7 @@ int main(int argc, char *argv[])
     adfGeoTransform[5] /* n-s pixel resolution (negative value) 
   */
 
-  fprintf(stdout,"Nice Try \n");
+  fprintf(stdout,"LAS Normalizer \n");
   //fprintf(stdout," SPOT <----- \n");
   
   /* ==================================================================*/
