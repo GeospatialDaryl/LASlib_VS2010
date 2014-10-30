@@ -1,13 +1,11 @@
 /*
 ===============================================================================
 
-  FILE:  lasexample.cpp
+  FILE:  lasnorm.cpp
   
   CONTENTS:
   
-    This source code serves as an example how you can easily use laslib to
-    write your own processing tools or how to import from and export to the
-    LAS format or - its compressed, but identical twin - the LAZ format.
+    This is the 1st version of the LASNorm LAS normalizer.
 
   PROGRAMMERS:
   
@@ -16,15 +14,23 @@
 	from template lasexample by:
 		martin.isenburg@gmail.com
   
-  COPYRIGHT:
-  
+  COPYRIGHT & LICENSE:
+    original lasexample template code is 
     (c) 2011, Martin Isenburg, LASSO - tools to catch reality
+				www.rapidlasso.com
+	and released under LGPL
+
+	GDAL components are FOSS under X/MIT License.
+
+	All other components are in the public domain.
+
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
     implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   
   CHANGE HISTORY:
-      28 May 2012 -- Final Version 
+      2104-10-29	--	DVD	--	Finished v0 for VS2010 and 64bit
+	  2012-05-28	--	DVD	--	Original hack for LASNorm - built on Ubuntu
 	  3 January 2011 -- created while too homesick to go to Salzburg with Silke
   
 ===============================================================================
@@ -61,10 +67,10 @@ bands rBand;
 void usage(bool wait=false)
 {
   fprintf(stderr,"usage:\n");
-  fprintf(stderr,"lastest in_DEM.img in.las out.las\n");
-  fprintf(stderr,"lastest -i in.las -o out.las -verbose\n");
-  fprintf(stderr,"lastest -ilas -olas < in.las > out.las\n");
-  fprintf(stderr,"lastest -h\n");
+  fprintf(stderr,"lasnorm in_DEM.img in.las out.las\n");
+  fprintf(stderr,"lasnorm -i in.las -o out.las -verbose\n");
+  fprintf(stderr,"lasnorm -ilas -olas < in.las > out.las\n");
+  fprintf(stderr,"lasnorm -h\n");
   fprintf(stderr,"Pret-ty Good!\n");
   if (wait)
   {
@@ -378,7 +384,9 @@ int main(int argc, char *argv[])
   fprintf(stdout,"Nice Try \n");
   //fprintf(stdout," SPOT <----- \n");
   
-  // where there is a point to read
+  /* ==================================================================*/
+  /* START WHILE there is a point to read
+  /*===================================================================*/
   while (lasreader->read_point())
   {
     
@@ -411,7 +419,7 @@ int main(int argc, char *argv[])
 	dZ = lasreader->point.get_Z() * zScale + zOffset;
 	//fprintf (stdout,"\n df \n las: X,Y :  %18.5f  %20.5f  %10.2f  \n",
 		     //dfGeoX, dfGeoY, dfGeoZ);
-	fprintf (stdout,"\n dX \n las: X,Y :  %18.5f  %18.5f  %10.2f  \n",
+	if (verbose) fprintf (stdout,"\n dX \n las: X,Y :  %18.5f  %18.5f  %10.2f  \n",
 		     dX, dY, dZ);
 	//__________________________________________________________________________________________
 
@@ -466,8 +474,8 @@ int main(int argc, char *argv[])
 	int pX = iPixel;
 	int pY = iLine;
 	
-	fprintf(stdout,"iPixel, iLine:  %10i %10i \n",pX, pY);
-	fprintf(stdout,"xLL, dfGeoX, dfGeoX - xLL:  %18.7f %18.7f %18.7f \n",xLL,dfGeoX, dfGeoX - xLL);
+	if (verbose) fprintf(stdout,"iPixel, iLine:  %10i %10i \n",pX, pY);
+	if (verbose) fprintf(stdout,"xLL, dfGeoX, dfGeoX - xLL:  %18.7f %18.7f %18.7f \n",xLL,dfGeoX, dfGeoX - xLL);
 		
 	typedef std::vector<float> raster_data_t;
 	raster_data_t scanline(1);
@@ -488,7 +496,7 @@ int main(int argc, char *argv[])
 	//fprintf(stdout, "%.15g  \n" , bufPixel);
 	
     lasreader->point.Z = (dZ - bufPixel[0])*(1/zScale)+zOffset;
-    fprintf (stdout," X, Y, Z, demZ, height :  %18.2f  %18.2f  %10.2f %10.2f %10.2f \n", dX, dY, dZ, bufPixel[0], dZ-bufPixel[0]);
+    if (verbose) fprintf (stdout," X, Y, Z, demZ, height :  %18.2f  %18.2f  %10.2f %10.2f %10.2f \n", dX, dY, dZ, bufPixel[0], dZ-bufPixel[0]);
     // write the modified point
     laswriter->write_point(&lasreader->point);
     // add it to the inventory
